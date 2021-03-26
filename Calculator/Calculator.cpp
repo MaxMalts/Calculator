@@ -1,3 +1,5 @@
+#pragma comment(linker, "/STACK:100000000")
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <assert.h>
@@ -22,6 +24,15 @@ int Sign(float var) {
 	return 1;
 }
 
+
+/**
+*	Создает число foat по его целой и дробной частям
+*
+*	@param[in] intPart Целая часть (может быть отрицательная)
+*	@param[in] fracPart Дробная часть (всегда положительная)
+*
+*	@return Число float
+*/
 
 float CreateFloat(int intPart, int fracPart) {
 	int tenPow = 1;
@@ -62,6 +73,14 @@ int GetN(int* syntaxErr);
 
 
 
+/**
+*	Правило для получения вырвжения (G::=E'\0')
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Значение выражения
+*/
+
 float GetG(int* syntaxErr) {
 	assert(syntaxErr != NULL);
 
@@ -78,6 +97,14 @@ float GetG(int* syntaxErr) {
 	return val;
 }
 
+
+/**
+*	Правило для получения суммы, разности (E::=T{[+-]T}*)
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Значение выражения
+*/
 
 float GetE(int* syntaxErr) {
 	assert(syntaxErr != NULL);
@@ -106,6 +133,14 @@ float GetE(int* syntaxErr) {
 }
 
 
+/**
+*	Правило для получения умножения, деления (T::=P{[/*]P}*)
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Значение выражения
+*/
+
 float GetT(int* syntaxErr) {
 	assert(syntaxErr != NULL);
 
@@ -132,6 +167,15 @@ float GetT(int* syntaxErr) {
 	return val;
 }
 
+
+/**
+*	Правило для получения выражения в скобках, функии или числа(P::='('E')'|Func|F).\
+ Чтобы определить, что именно получать, смотрит первый символ.
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Значение выражения
+*/
 
 float GetP(int* syntaxErr) {
 	assert(syntaxErr != NULL);
@@ -163,6 +207,14 @@ float GetP(int* syntaxErr) {
 }
 
 
+/**
+*	Правило для получения функции ( Func::="sin"'('E')'|"cos"'('E')'...|"pow"'('E','E')' )
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Значение функции
+*/
+
 float GetFunc(int* syntaxErr) {
 	assert(syntaxErr != NULL);
 
@@ -182,6 +234,14 @@ float GetFunc(int* syntaxErr) {
 	return val;
 }
 
+
+/**
+*	Правило для получения числа float ( F::=I{'.'N}? )
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Число float
+*/
 
 float GetF(int* syntaxErr) {
 	assert(syntaxErr != NULL);
@@ -204,6 +264,14 @@ float GetF(int* syntaxErr) {
 	return val;
 }
 
+
+/**
+*	Правило для получения целого числа ( I::=[+-]?N )
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Целое число
+*/
 
 int GetI(int* syntaxErr) {
 	assert(syntaxErr != NULL);
@@ -228,6 +296,14 @@ int GetI(int* syntaxErr) {
 }
 
 
+/**
+*	Правило для получения целого положительного числа ( N::=['0'-'9']+ )
+*
+*	@param[out] syntaxErr Возникла ли синтаксическая ошбика (1 или 0)
+*
+*	@return Целое положительное число
+*/
+
 int GetN(int* syntaxErr) {
 	assert(syntaxErr != NULL);
 
@@ -248,7 +324,7 @@ int GetN(int* syntaxErr) {
 
 
 int main() {
-	char inpStr[100] = "";
+	char inpStr[10000] = "";
 	scanf("%s", inpStr);
 	fseek(stdin, 0, SEEK_END);
 
@@ -256,10 +332,13 @@ int main() {
 		curSequence = inpStr;
 
 		int syntaxErr = 0;
-		printf("%g\n\n", GetG(&syntaxErr));
-		if (syntaxErr) {
+		float ans = GetG(&syntaxErr);
+		
+		if (!syntaxErr) {
+			printf("%g\n\n", ans);
+		}
+		else {
 			printf("Syntax error\n\n");
-			return 1;
 		}
 
 		scanf("%s", inpStr);

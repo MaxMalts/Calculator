@@ -114,7 +114,28 @@ DEF_FUNC(arccos, {
 		val = acos(arg);
 	})
 
+
 DEF_FUNC(arctg, {
+		if (*curSequence != '(') {
+			*syntaxErr = 1;
+		}
+		assert_syntax(*syntaxErr);
+		curSequence++;
+
+		float arg = GetE(syntaxErr);
+		assert_syntax(*syntaxErr);
+
+		if (*curSequence != ')') {
+			*syntaxErr = 1;
+		}
+		assert_syntax(*syntaxErr);
+		curSequence++;
+
+		val = atan(arg);
+	})
+
+
+DEF_FUNC(arcctg, {
 		if (*curSequence != '(') {
 			*syntaxErr = 1;
 		}
